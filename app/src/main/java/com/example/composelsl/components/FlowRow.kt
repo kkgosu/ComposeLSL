@@ -6,8 +6,10 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -24,6 +26,7 @@ fun ChipFlowLayout(
     content: @Composable () -> Unit
 ) {
     Layout(content, modifier) { measurables, constraints ->
+        var hotTopicCoordinates = Pair(0, 0)
         val sequences = mutableListOf<List<Placeable>>()
         val crossAxisSizes = mutableListOf<Int>()
         val crossAxisPositions = mutableListOf<Int>()
@@ -37,8 +40,7 @@ fun ChipFlowLayout(
 
         // Можно ли добавить к текущей строке
         fun canAddToCurrentSequence(placeable: Placeable) =
-            currentSequence.isEmpty() || currentHorizontalSize + horizontalSpacing.roundToPx() +
-                    placeable.width <= constraints.maxWidth
+            currentSequence.isEmpty() || currentHorizontalSize + horizontalSpacing.roundToPx() + placeable.width <= constraints.maxWidth
 
         // Сохраняет информацию о текущей строке и стартует новую
         fun startNewSequence() {
@@ -66,6 +68,9 @@ fun ChipFlowLayout(
             currentSequence.add(placeable)
             currentHorizontalSize += placeable.width
             currentVerticalSize = max(currentVerticalSize, placeable.height)
+            if (measurable.layoutId == "spoiler") {
+                hotTopicCoordinates = Pair(currentSequence.size, currentSequence.size - 1)
+            }
         }
 
         if (currentSequence.isNotEmpty()) startNewSequence()
@@ -75,19 +80,22 @@ fun ChipFlowLayout(
 
         layout(width, height) {
             sequences.forEachIndexed { i, placeables ->
-                val childrenMainAxisSizes = IntArray(placeables.size) { j ->
+                val childrenHorizontalSizes = IntArray(placeables.size) { j ->
                     placeables[j].width + if (j < placeables.lastIndex) horizontalSpacing.roundToPx() else 0
                 }
-                val mainAxisPositions = IntArray(childrenMainAxisSizes.size) { 0 }
+                val horizontalPositions = IntArray(childrenHorizontalSizes.size) { 0 }
                 with(Arrangement.Top) {
-                    arrange(width, childrenMainAxisSizes, mainAxisPositions)
+                    arrange(width, childrenHorizontalSizes, horizontalPositions)
                 }
                 placeables.forEachIndexed { j, placeable ->
                     val crossAxis = 0
-                    placeable.place(
-                        x = mainAxisPositions[j],
-                        y = crossAxisPositions[i] + crossAxis
-                    )
+                    placeable.placeWithLayer(
+                        x = horizontalPositions[j], y = crossAxisPositions[i] + crossAxis
+                    ) {
+                        if (i == hotTopicCoordinates.first && j == hotTopicCoordinates.second) {
+                            renderEffect = BlurEffect(2f, 20f)
+                        }
+                    }
                 }
             }
         }
@@ -108,7 +116,7 @@ fun ChipPreview() {
         FilterChip(selected = false, onClick = { /*TODO*/ }, label = {
             Text(text = "Jesse Pinkman")
         })
-        FilterChip(selected = false, onClick = { /*TODO*/ }, label = {
+        FilterChip(modifier = Modifier.layoutId("spoiler"), selected = false, onClick = { /*TODO*/ }, label = {
             Text(text = "Saul Goodman")
         })
         FilterChip(selected = false, onClick = { /*TODO*/ }, label = {
