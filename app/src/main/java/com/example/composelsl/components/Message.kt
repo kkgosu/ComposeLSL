@@ -61,6 +61,7 @@ fun ChatFlexBoxLayout(
                 .padding(
                     start = 2.dp,
                     end = 6.dp,
+                    bottom = 2.dp,
                 )
                 .wrapContentSize(),
             text = text,
@@ -90,6 +91,7 @@ fun ChatFlexBoxLayout(
         modifier = modifier.padding(
             start = 2.dp,
             end = 6.dp,
+            bottom = 2.dp
         ),
         content = content
     ) { measurables: List<Measurable>, constraints: Constraints ->

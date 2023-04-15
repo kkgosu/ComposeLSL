@@ -7,58 +7,67 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.composelsl.R
-import com.example.composelsl.ui.theme.SentMessageColor
+import com.example.composelsl.ui.theme.ReceivedMessageColor
 
 /**
- * @author Konstantin Koval on 14.04.2023
+ * @author Konstantin Koval on 15.04.2023
  */
+var recipientOriginalName = "Crazy8"
+
 @Composable
-fun SentMessage(
+fun ReceivedMessage(
     text: String,
     quotedMessage: String? = null,
     quotedImage: Int? = null,
     messageTime: String,
-    messageStatus: MessageStatus
 ) {
     Column(
-        horizontalAlignment = Alignment.End,
+        horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(start = 60.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
+            .padding(start = 8.dp, end = 60.dp, top = 2.dp, bottom = 2.dp)
     ) {
         SubcomposeColumn(
             modifier = Modifier
                 .shadow(1.dp, RoundedCornerShape(8.dp))
                 .clip(RoundedCornerShape(8.dp))
-                .background(SentMessageColor)
+                .background(ReceivedMessageColor)
                 .clickable { },
             content = {
+                RecipientName(
+                    name = recipientOriginalName,
+                )
                 if (quotedMessage != null || quotedImage != null) {
                     QuotedMessage(
                         quotedMessage = quotedMessage,
                         quotedImage = quotedImage,
-                        sent = true
+                        sent = false,
                     )
                 }
                 ChatFlexBoxLayout(
-                    modifier = Modifier.padding(top = if (quotedMessage == null && quotedImage == null) 2.dp else 0.dp),
+                    modifier = Modifier,
                     text = text,
                     messageStat = {
-                        MessageTimeText(
-                            modifier = Modifier.wrapContentSize(),
-                            messageTime = messageTime,
-                            messageStatus = messageStatus
+                        Text(
+                            modifier = Modifier.padding(top = 1.dp, bottom = 1.dp, end = 4.dp),
+                            text = messageTime,
+                            fontSize = 12.sp,
+                            color = Color.White
                         )
                     }
                 )
@@ -67,36 +76,49 @@ fun SentMessage(
     }
 }
 
+@Composable
+private fun RecipientName(
+    name: String,
+    modifier: Modifier = Modifier,
+    onClick: ((String) -> Unit)? = null
+) {
+    Text(
+        modifier = modifier
+            .clickable {
+                onClick?.invoke(name)
+            }
+            .padding(horizontal = 10.dp, vertical = 4.dp),
+        text = name,
+        color = Color.White,
+        fontSize = 15.sp,
+        maxLines = 1,
+        letterSpacing = 1.sp,
+        fontWeight = FontWeight.Bold,
+        overflow = TextOverflow.Ellipsis,
+    )
+}
+
 @Preview
 @Composable
-fun SentMessagePreview() {
+fun ReceivedMessagePreview() {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        SentMessage(
+        ReceivedMessage(
             text = "Heisenberg",
+            quotedImage = null,
             quotedMessage = null,
-            messageTime = "13:37",
-            messageStatus = MessageStatus.READ,
-            quotedImage = null
+            messageTime = "13:37"
         )
-        SentMessage(
+        ReceivedMessage(
             text = "Heisenberg",
-            quotedMessage = null,
-            messageTime = "13:37",
-            messageStatus = MessageStatus.READ,
-            quotedImage = R.drawable.heisenberg
-        )
-        SentMessage(
-            text = "Heisenberg",
+            quotedImage = null,
             quotedMessage = "Say my name \uD83D\uDE0E",
-            messageTime = "13:37",
-            messageStatus = MessageStatus.READ
+            messageTime = "13:37"
         )
-        SentMessage(
+        ReceivedMessage(
             text = "Heisenberg",
+            quotedImage = R.drawable.heisenberg,
             quotedMessage = "Say my name \uD83D\uDE0E",
-            messageTime = "13:37",
-            messageStatus = MessageStatus.READ,
-            quotedImage = R.drawable.heisenberg
+            messageTime = "13:37"
         )
     }
 }
