@@ -1,7 +1,6 @@
 package com.example.composelsl.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,8 +42,7 @@ fun SentMessage(
             modifier = Modifier
                 .shadow(1.dp, RoundedCornerShape(8.dp))
                 .clip(RoundedCornerShape(8.dp))
-                .background(SentMessageColor)
-                .clickable { },
+                .background(SentMessageColor),
             content = {
                 if (quotedMessage != null || quotedImage != null) {
                     QuotedMessage(

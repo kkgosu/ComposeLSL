@@ -6,17 +6,11 @@ import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
@@ -28,8 +22,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.LookaheadScope
 import androidx.compose.ui.layout.intermediateLayout
@@ -37,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
-import com.example.composelsl.ui.theme.SentMessageColor
+import com.example.composelsl.ui.theme.Purple80
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -73,40 +65,32 @@ fun FromLazyColumnToCenter() {
         val movableItems = sms.mapIndexed { index, item ->
             itemMap.getOrPut(item) {
                 movableContentOf<Modifier> {
-                    Column(
-                        horizontalAlignment = Alignment.End,
-                        modifier = it
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .padding(start = 60.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
-                            .animatePlacementInScope()
-                    ) {
-                        SubcomposeColumn(
-                            modifier = Modifier
-                                .shadow(1.dp, RoundedCornerShape(8.dp))
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(SentMessageColor)
+                    if (index % 2 == 0) {
+                        SentMessage(
+                            text = item.message,
+                            messageTime = "13:37",
+                            messageStatus = MessageStatus.READ,
+                            modifier = it
+                                .animatePlacementInScope()
                                 .clickable {
                                     id = if (id == index) -1 else index
-                                },
-                            content = {
-                                ChatFlexBoxLayout(
-                                    modifier = Modifier.padding(top = 2.dp),
-                                    text = item.message,
-                                    messageStat = {
-                                        MessageTimeText(
-                                            modifier = Modifier.wrapContentSize(),
-                                            messageTime = "227",
-                                            messageStatus = MessageStatus.READ
-                                        )
-                                    }
-                                )
+                                }
+                        )
+                    } else {
+                        ReceivedMessage(text = item.message, messageTime = "13:37", modifier = it
+                            .animatePlacementInScope()
+                            .clickable {
+                                id = if (id == index) -1 else index
                             })
                     }
                 }
             }
         }
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Purple80)
+        ) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
