@@ -55,7 +55,7 @@ enum class MessageStatus {
 }
 
 data class ChatMessage(
-    val id: Long,
+    val id: Int,
     var message: String,
-    var date: Long
+    var date: Long = 0
 )

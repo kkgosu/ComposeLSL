@@ -31,13 +31,15 @@ var recipientOriginalName = "Crazy8"
 @Composable
 fun ReceivedMessage(
     text: String,
+    modifier: Modifier = Modifier,
     quotedMessage: String? = null,
     quotedImage: Int? = null,
     messageTime: String,
+    alignment: Alignment.Horizontal = Alignment.Start
 ) {
     Column(
-        horizontalAlignment = Alignment.Start,
-        modifier = Modifier
+        horizontalAlignment = alignment,
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(start = 8.dp, end = 60.dp, top = 2.dp, bottom = 2.dp)
@@ -46,8 +48,7 @@ fun ReceivedMessage(
             modifier = Modifier
                 .shadow(1.dp, RoundedCornerShape(8.dp))
                 .clip(RoundedCornerShape(8.dp))
-                .background(ReceivedMessageColor)
-                .clickable { },
+                .background(ReceivedMessageColor),
             content = {
                 RecipientName(
                     name = recipientOriginalName,

@@ -25,14 +25,16 @@ import com.example.composelsl.ui.theme.SentMessageColor
 @Composable
 fun SentMessage(
     text: String,
+    modifier: Modifier = Modifier,
     quotedMessage: String? = null,
     quotedImage: Int? = null,
     messageTime: String,
-    messageStatus: MessageStatus
+    messageStatus: MessageStatus,
+    alignment: Alignment.Horizontal = Alignment.End
 ) {
     Column(
-        horizontalAlignment = Alignment.End,
-        modifier = Modifier
+        horizontalAlignment = alignment,
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(start = 60.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
