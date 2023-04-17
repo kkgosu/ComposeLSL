@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -105,12 +107,12 @@ fun FromLazyColumnToCenter() {
             }
         }
         Box(modifier = Modifier.fillMaxSize()) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .blur(if (id != -1) 10.dp else 0.dp)
             ) {
-                movableItems.forEachIndexed { index, it ->
+                itemsIndexed(movableItems) { index, it ->
                     if (index != id) it(Modifier) else Spacer(modifier = Modifier.height(40.dp))
                 }
             }
