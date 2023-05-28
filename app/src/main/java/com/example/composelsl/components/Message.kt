@@ -2,6 +2,7 @@ package com.example.composelsl.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -110,7 +111,8 @@ fun ChatFlexBoxLayout(
             // Parent width of this chat row is either result of width calculation
             // or quote or other sibling width if they are longer than calculated width.
             // minWidth of Constraint equals (text width + horizontal padding)
-            chatRowData.parentWidth = chatRowData.rowWidth.coerceAtLeast(minimumValue = constraints.minWidth)
+            chatRowData.parentWidth =
+                chatRowData.rowWidth.coerceAtLeast(minimumValue = constraints.minWidth)
         }
         onMeasure?.invoke(chatRowData)
         layout(width = chatRowData.parentWidth, height = chatRowData.rowHeight) {
@@ -208,6 +210,36 @@ private fun Message(
         softWrap = softWrap,
         maxLines = maxLines,
     )
+}
+
+@Preview
+@Composable
+fun MessagePreview() {
+    Box(
+        modifier = Modifier
+            .background(Color.Black)
+            .padding(16.dp)
+            .shadow(1.dp, RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(8.dp))
+            .background(SentMessageColor)
+    ) {
+        ChatFlexBoxLayout(
+            modifier = Modifier.padding(
+                start = 2.dp,
+                top = 2.dp,
+                end = 4.dp,
+                bottom = 2.dp
+            ),
+            text = "Say my name \uD83D\uDE0E",
+            messageStat = {
+                MessageTimeText(
+                    modifier = Modifier.wrapContentSize(),
+                    messageTime = "13:37",
+                    messageStatus = MessageStatus.READ
+                )
+            }
+        )
+    }
 }
 
 @Preview
