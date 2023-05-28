@@ -105,15 +105,7 @@ fun ChatFlexBoxLayout(
         val message = placeables.first()
         val status = placeables.last()
         // считаем параметры строки
-        if ((chatRowData.rowWidth == 0 || chatRowData.rowHeight == 0) || chatRowData.text != text) {
-            chatRowData.parentWidth = constraints.maxWidth
-            calculateChatWidthAndHeight(chatRowData, message, status)
-            // Parent width of this chat row is either result of width calculation
-            // or quote or other sibling width if they are longer than calculated width.
-            // minWidth of Constraint equals (text width + horizontal padding)
-            chatRowData.parentWidth =
-                chatRowData.rowWidth.coerceAtLeast(minimumValue = constraints.minWidth)
-        }
+        calculateMessageParams(chatRowData, text, constraints, message, status)
         onMeasure?.invoke(chatRowData)
         layout(width = chatRowData.parentWidth, height = chatRowData.rowHeight) {
             message.placeRelative(0, 0)
@@ -122,6 +114,24 @@ fun ChatFlexBoxLayout(
                 chatRowData.rowHeight - status.height
             )
         }
+    }
+}
+
+private fun calculateMessageParams(
+    chatRowData: ChatRowData,
+    text: String,
+    constraints: Constraints,
+    message: Placeable,
+    status: Placeable
+) {
+    if ((chatRowData.rowWidth == 0 || chatRowData.rowHeight == 0) || chatRowData.text != text) {
+        chatRowData.parentWidth = constraints.maxWidth
+        calculateChatWidthAndHeight(chatRowData, message, status)
+        // Parent width of this chat row is either result of width calculation
+        // or quote or other sibling width if they are longer than calculated width.
+        // minWidth of Constraint equals (text width + horizontal padding)
+        chatRowData.parentWidth =
+            chatRowData.rowWidth.coerceAtLeast(minimumValue = constraints.minWidth)
     }
 }
 
