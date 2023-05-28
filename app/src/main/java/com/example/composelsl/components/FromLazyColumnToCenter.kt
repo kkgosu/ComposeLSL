@@ -42,20 +42,14 @@ import kotlinx.coroutines.launch
 fun FromLazyColumnToCenter() {
     val sms = listOf(
         ChatMessage(
-            0, "Say my name",
+            0, "Say my name \uD83D\uDE0E",
         ),
         ChatMessage(
-            1, "Heisenberg",
+            1, "Heisenberg \uD83E\uDD14",
         ),
         ChatMessage(
-            2, "Cool",
-        ),
-        ChatMessage(
-            3, "Yea",
-        ),
-        ChatMessage(
-            4, "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        ),
+            2, "You're goddamn right! \uD83D\uDE08",
+        )
     )
     LookaheadScope {
         var id by remember { mutableStateOf(-1) }

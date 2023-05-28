@@ -26,7 +26,7 @@ import com.example.composelsl.ui.theme.ReceivedMessageColor
 /**
  * @author Konstantin Koval on 15.04.2023
  */
-var recipientOriginalName = "Crazy8"
+var recipientOriginalName = "Declan"
 
 @Composable
 fun ReceivedMessage(
