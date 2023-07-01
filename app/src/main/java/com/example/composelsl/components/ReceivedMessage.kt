@@ -63,14 +63,8 @@ fun ReceivedMessage(
                 ChatFlexBoxLayout(
                     modifier = Modifier,
                     text = text,
-                    messageStat = {
-                        Text(
-                            modifier = Modifier.padding(top = 1.dp, bottom = 1.dp, end = 4.dp),
-                            text = messageTime,
-                            fontSize = 12.sp,
-                            color = Color.White
-                        )
-                    }
+                    messageTime = messageTime,
+                    messageStatus = null
                 )
             }
         )

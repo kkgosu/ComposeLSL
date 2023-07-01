@@ -3,6 +3,9 @@ package com.example.composelsl.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,12 +33,13 @@ fun SubcomposeColumn(
         var placeables: List<Placeable> = subcompose(subcomposeIndex++, content).map {
             it.measure(constraints)
         }
-        val columnSize = placeables.fold(IntSize.Zero) { currentMax: IntSize, placeable: Placeable ->
-            IntSize(
-                width = maxOf(currentMax.width, placeable.width),
-                height = currentMax.height + placeable.height
-            )
-        }
+        val columnSize =
+            placeables.fold(IntSize.Zero) { currentMax: IntSize, placeable: Placeable ->
+                IntSize(
+                    width = maxOf(currentMax.width, placeable.width),
+                    height = currentMax.height + placeable.height
+                )
+            }
 
         // Remeasure every element using width of longest item using it as min width for
         // every composable
@@ -62,11 +66,46 @@ fun SubcomposeColumnPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         SubcomposeColumn {
             Text(text = "smol", modifier = Modifier.background(Color.LightGray))
-            Text(text = "Lorem Ipsum is simply dummy text", modifier = Modifier.background(Color.Blue))
+            Text(
+                text = "Lorem Ipsum is simply dummy text",
+                modifier = Modifier.background(Color.Blue)
+            )
         }
         SubcomposeColumn {
             Text(text = "smol", modifier = Modifier.background(Color.LightGray))
-            Text(text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.", modifier = Modifier.background(Color.Blue))
+            Text(
+                text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                modifier = Modifier.background(Color.Blue)
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun IntrinsicPreview() {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(modifier = Modifier.width(IntrinsicSize.Max)) {
+            Text(text = "smol", modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.LightGray))
+            Text(
+                text = "Lorem Ipsum is simply dummy text",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Blue)
+            )
+        }
+        Column(modifier = Modifier.width(IntrinsicSize.Max)) {
+            Text(text = "smol", modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.LightGray))
+            Text(
+                text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Blue)
+            )
         }
     }
 }

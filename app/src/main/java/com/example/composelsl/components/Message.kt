@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,15 +16,8 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelsl.ui.theme.SentMessageColor
@@ -38,46 +30,15 @@ import com.example.composelsl.ui.theme.SentMessageColor
  */
 @Composable
 fun ChatFlexBoxLayout(
-    modifier: Modifier = Modifier,
     text: String,
-    color: Color = Color.White,
-    fontSize: TextUnit = 16.sp,
-    fontStyle: FontStyle? = null,
-    fontWeight: FontWeight? = null,
-    fontFamily: FontFamily? = null,
-    letterSpacing: TextUnit = TextUnit.Unspecified,
-    textDecoration: TextDecoration? = null,
-    textAlign: TextAlign? = null,
-    lineHeight: TextUnit = TextUnit.Unspecified,
-    overflow: TextOverflow = TextOverflow.Clip,
-    softWrap: Boolean = true,
-    maxLines: Int = Int.MAX_VALUE,
-    messageStat: @Composable () -> Unit,
-    onMeasure: ((ChatRowData) -> Unit)? = null
+    messageTime: String,
+    messageStatus: MessageStatus?,
+    modifier: Modifier = Modifier,
 ) {
-    val chatRowData = remember { ChatRowData() }
+    val chatRowData = remember { ChatRowData(text) }
     val content = @Composable {
         Message(
-            modifier = modifier
-                .padding(
-                    start = 2.dp,
-                    end = 6.dp,
-                    bottom = 2.dp,
-                )
-                .wrapContentSize(),
             text = text,
-            color = color,
-            fontSize = fontSize,
-            fontStyle = fontStyle,
-            fontWeight = fontWeight,
-            fontFamily = fontFamily,
-            letterSpacing = letterSpacing,
-            textDecoration = textDecoration,
-            textAlign = textAlign,
-            lineHeight = lineHeight,
-            overflow = overflow,
-            softWrap = softWrap,
-            maxLines = maxLines,
             onTextLayout = { textLayoutResult: TextLayoutResult ->
                 // maxWidth текста = maxWidth - horizontal padding
                 chatRowData.lineCount = textLayoutResult.lineCount
@@ -85,15 +46,11 @@ fun ChatFlexBoxLayout(
                 chatRowData.textWidth = textLayoutResult.size.width
             }
         )
-        messageStat()
+        MessageTimeText(messageTime = messageTime, messageStatus = messageStatus)
     }
 
     Layout(
-        modifier = modifier.padding(
-            start = 2.dp,
-            end = 6.dp,
-            bottom = 2.dp
-        ),
+        modifier = modifier.padding(start = 2.dp, end = 6.dp, bottom = 2.dp),
         content = content
     ) { measurables: List<Measurable>, constraints: Constraints ->
         if (measurables.size != 2) throw IllegalArgumentException("There should be 2 components for this layout")
@@ -105,8 +62,7 @@ fun ChatFlexBoxLayout(
         val message = placeables.first()
         val status = placeables.last()
         // считаем параметры строки
-        calculateMessageParams(chatRowData, text, constraints, message, status)
-        onMeasure?.invoke(chatRowData)
+        calculateMessageParams(chatRowData, constraints, message, status)
         layout(width = chatRowData.parentWidth, height = chatRowData.rowHeight) {
             message.placeRelative(0, 0)
             status.placeRelative(
@@ -119,12 +75,11 @@ fun ChatFlexBoxLayout(
 
 private fun calculateMessageParams(
     chatRowData: ChatRowData,
-    text: String,
     constraints: Constraints,
     message: Placeable,
     status: Placeable
 ) {
-    if ((chatRowData.rowWidth == 0 || chatRowData.rowHeight == 0) || chatRowData.text != text) {
+    if ((chatRowData.rowWidth == 0 || chatRowData.rowHeight == 0)) {
         chatRowData.parentWidth = constraints.maxWidth
         calculateChatWidthAndHeight(chatRowData, message, status)
         // Parent width of this chat row is either result of width calculation
@@ -136,7 +91,7 @@ private fun calculateMessageParams(
 }
 
 data class ChatRowData(
-    var text: String = "",
+    var text: String,
     // Width of the text without padding
     var textWidth: Int = 0,
     var lastLineWidth: Float = 0f,
@@ -185,21 +140,9 @@ private fun calculateChatWidthAndHeight(
 
 @Composable
 private fun Message(
-    modifier: Modifier = Modifier,
     text: String,
+    modifier: Modifier = Modifier,
     onTextLayout: (TextLayoutResult) -> Unit,
-    color: Color = Color.Unspecified,
-    fontSize: TextUnit = 16.sp,
-    fontStyle: FontStyle? = null,
-    fontWeight: FontWeight? = null,
-    fontFamily: FontFamily? = null,
-    letterSpacing: TextUnit = TextUnit.Unspecified,
-    textDecoration: TextDecoration? = null,
-    textAlign: TextAlign? = null,
-    lineHeight: TextUnit = TextUnit.Unspecified,
-    overflow: TextOverflow = TextOverflow.Clip,
-    softWrap: Boolean = true,
-    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         modifier = modifier
@@ -207,18 +150,8 @@ private fun Message(
             .padding(bottom = 4.dp),
         text = text.trim(),
         onTextLayout = onTextLayout,
-        color = color,
-        fontSize = fontSize,
-        fontStyle = fontStyle,
-        fontWeight = fontWeight,
-        fontFamily = fontFamily,
-        letterSpacing = letterSpacing,
-        textDecoration = textDecoration,
-        textAlign = textAlign,
-        lineHeight = lineHeight,
-        overflow = overflow,
-        softWrap = softWrap,
-        maxLines = maxLines,
+        color = Color.White,
+        fontSize = 16.sp,
     )
 }
 
@@ -240,14 +173,9 @@ fun MessagePreview() {
                 end = 4.dp,
                 bottom = 2.dp
             ),
-            text = "Say my name \uD83D\uDE0E",
-            messageStat = {
-                MessageTimeText(
-                    modifier = Modifier.wrapContentSize(),
-                    messageTime = "13:37",
-                    messageStatus = MessageStatus.READ
-                )
-            }
+            text = "Say my name \uD83D\uDE0E\nSay my name \uD83D\uDE0E",
+            messageTime = "13:37",
+            messageStatus = MessageStatus.READ,
         )
     }
 }
@@ -269,14 +197,9 @@ fun ChatFlexPreview() {
                     end = 4.dp,
                     bottom = 2.dp
                 ),
-                text = "Say my name \uD83D\uDE0E",
-                messageStat = {
-                    MessageTimeText(
-                        modifier = Modifier.wrapContentSize(),
-                        messageTime = "13:37",
-                        messageStatus = MessageStatus.READ
-                    )
-                }
+                text = "Say my name \uD83D\uDE0E ",
+                messageTime = "13:37",
+                messageStatus = MessageStatus.READ
             )
         }
     )

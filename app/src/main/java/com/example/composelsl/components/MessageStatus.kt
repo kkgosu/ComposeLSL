@@ -21,32 +21,29 @@ import androidx.compose.ui.unit.sp
  */
 @Composable
 fun MessageTimeText(
-    modifier: Modifier = Modifier,
     messageTime: String,
-    messageStatus: MessageStatus
+    messageStatus: MessageStatus?,
 ) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
-            modifier = Modifier.padding(top = 1.dp, bottom = 1.dp),
             text = messageTime,
             fontSize = 12.sp,
             color = Color.White
         )
-        Icon(
-            modifier = Modifier
-                .size(22.dp)
-                .padding(start = 4.dp),
-            imageVector = when (messageStatus) {
-                MessageStatus.PENDING -> Icons.Default.AccessTime
-                MessageStatus.RECEIVED -> Icons.Default.Done
-                else -> Icons.Default.DoneAll
-            },
-            tint = if (messageStatus == MessageStatus.READ) Color.White else Color(0xff424242),
-            contentDescription = "messageStatus"
-        )
+        if (messageStatus != null) {
+            Icon(
+                modifier = Modifier
+                    .size(22.dp)
+                    .padding(start = 4.dp),
+                imageVector = when (messageStatus) {
+                    MessageStatus.PENDING -> Icons.Default.AccessTime
+                    MessageStatus.RECEIVED -> Icons.Default.Done
+                    else -> Icons.Default.DoneAll
+                },
+                tint = if (messageStatus == MessageStatus.READ) Color.White else Color(0xff424242),
+                contentDescription = "messageStatus"
+            )
+        }
     }
 }
 

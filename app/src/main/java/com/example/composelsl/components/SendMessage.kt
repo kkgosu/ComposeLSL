@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -54,13 +53,8 @@ fun SentMessage(
                 ChatFlexBoxLayout(
                     modifier = Modifier.padding(top = if (quotedMessage == null && quotedImage == null) 2.dp else 0.dp),
                     text = text,
-                    messageStat = {
-                        MessageTimeText(
-                            modifier = Modifier.wrapContentSize(),
-                            messageTime = messageTime,
-                            messageStatus = messageStatus
-                        )
-                    }
+                    messageTime = messageTime,
+                    messageStatus = messageStatus
                 )
             }
         )

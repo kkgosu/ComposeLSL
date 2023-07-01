@@ -8,15 +8,20 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun SimpleLayout(modifier: Modifier = Modifier) {
-    Layout(modifier = modifier, content = { /*TODO*/ }, measurePolicy = { measurables, constrains ->
-        //measure
-        val placeables = measurables.map { it.measure(constrains) }
-        layout(500, 500) {
-            //place
-            placeables.forEach { it.place(0, 0) }
+fun SimpleLayout(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Layout(
+        modifier = modifier,
+        content = content,
+        measurePolicy = { measurables, constrains ->
+            // this: MeasureScope
+            layout(500, 500) {
+                // this: PlaceableScope
+            }
         }
-    })
+    )
 }
 
 @Composable
